@@ -8,7 +8,6 @@ namespace AsymmetricEncryption
     public class AsymmetricEncryptionService
     {
         private readonly CspParameters cspParameters;
-        private RSACryptoServiceProvider rsa;
 
         public AsymmetricEncryptionService()
         {
@@ -23,8 +22,8 @@ namespace AsymmetricEncryption
         /// </summary>
         /// <param name="containerName">The container name.</param>
         /// <param name="useMachineKeyStore">Specify wether or not to use the machine key store.</param>
-        /// <param name="keySizeInBits">Key size in bits. Default is 1024.</param>
-        public void RetrieveKeyPair(string containerName, bool useMachineKeyStore, int keySizeInBits = 1024)
+        /// <param name="keySizeInBits">Key size in bits. Default is 2048.</param>
+        public RSAParameters RetrieveKeyPair(string containerName, bool useMachineKeyStore, bool usePrivateKey, int keySizeInBits = 2048)
         {
             string containerLocation = useMachineKeyStore == true
                 ? "C:\\ProgramData\\Microsoft\\Crypto\\RSA\\MachineKeys"               // Windows 10 key store
@@ -36,14 +35,21 @@ namespace AsymmetricEncryption
                 cspParameters.Flags = CspProviderFlags.UseMachineKeyStore;
             }
 
-            rsa = new RSACryptoServiceProvider(keySizeInBits, cspParameters);
-            rsa.PersistKeyInCsp = true;
-
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(keySizeInBits, cspParameters);
             CspKeyContainerInfo info = new CspKeyContainerInfo(cspParameters);
 
             Console.WriteLine($"Key Container name: {info.KeyContainerName}");
             Console.WriteLine($"Unique Key Container name: {info.UniqueKeyContainerName}");
             Console.WriteLine($"Key Container Location: {containerLocation}");
+
+            if (usePrivateKey == true)
+            {
+                return rsa.ExportParameters(true);
+            }
+            else
+            {
+                return rsa.ExportParameters(false);
+            }
         }
 
         /// <summary>
@@ -53,16 +59,10 @@ namespace AsymmetricEncryption
         /// <param name="encryptWithPrivateKey"></param>
         /// <param name="useOAEPPadding">OAEPPadding</param>
         /// <returns>Encrypted string data in base64 encoding.</returns>
-        public string Encrypt(string stringDataToEncrypt, bool encryptWithPrivateKey, bool useOAEPPadding)
+        public string Encrypt(string stringDataToEncrypt, RSAParameters rsaParameters, bool useOAEPPadding, int keySize = 2048)
         {
-            if (encryptWithPrivateKey == true)
-            {
-                rsa.ExportParameters(true);
-            }
-            else
-            {
-                rsa.ExportParameters(false);
-            }
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(keySize, cspParameters);
+            rsa.ImportParameters(rsaParameters);
 
             byte[] dataToEncryptBytes = Encoding.UTF8.GetBytes(stringDataToEncrypt);
             byte[] encryptedBytes = rsa.Encrypt(dataToEncryptBytes, useOAEPPadding);
@@ -71,16 +71,10 @@ namespace AsymmetricEncryption
             return encryptedDataInBase64;
         }
 
-        public string Decrypt(string encryptedData, bool decryptWithPrivateKey, bool useOAEPPadding)
+        public string Decrypt(string encryptedData, RSAParameters rsaParameters, bool useOAEPPadding, int keySize = 2048)
         {
-            if (decryptWithPrivateKey == true)
-            {
-                rsa.ExportParameters(true);
-            }
-            else
-            {
-                rsa.ExportParameters(false);
-            }
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(keySize, cspParameters);
+            rsa.ImportParameters(rsaParameters);
 
             byte[] encryptedDataBytes = Convert.FromBase64String(encryptedData);
             byte[] decryptBytes = rsa.Decrypt(encryptedDataBytes, useOAEPPadding);
@@ -88,5 +82,6 @@ namespace AsymmetricEncryption
 
             return secretMessage;
         }
+
     }
 }

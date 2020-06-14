@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Security.Cryptography;
 
 namespace AsymmetricEncryption
 {
@@ -9,18 +8,21 @@ namespace AsymmetricEncryption
         {
             AsymmetricEncryptionService asymmetricEncryptionService = new AsymmetricEncryptionService();
             string containerName = "MyKeyStore";
-            int keySize = 2048;
             bool useMachineKeyStore = false;
-            bool encryptWithPrivateKey = true;
             bool useOAEPPadding = false;
-            asymmetricEncryptionService.RetrieveKeyPair(containerName, useMachineKeyStore, keySize);
+            var usePrivateKey = false;
+            var rsaParams = asymmetricEncryptionService.RetrieveKeyPair(containerName, useMachineKeyStore, usePrivateKey);
 
             string secret = "My Secret Message 123123123";
             Console.WriteLine($"Message to encrypt{secret}");
-            string encryptedSecret = asymmetricEncryptionService.Encrypt(secret, encryptWithPrivateKey, useOAEPPadding);
+            // Encrypt with public key
+            string encryptedSecret = asymmetricEncryptionService.Encrypt(secret, rsaParams, useOAEPPadding);
             Console.WriteLine($"Encrypted string: {encryptedSecret}");
 
-            string decryptedSecret = asymmetricEncryptionService.Decrypt(encryptedSecret, encryptWithPrivateKey, useOAEPPadding);
+            // Decrypt with private key
+            //usePrivateKey = true;
+            rsaParams = asymmetricEncryptionService.RetrieveKeyPair(containerName, useMachineKeyStore, usePrivateKey);
+            string decryptedSecret = asymmetricEncryptionService.Decrypt(encryptedSecret, rsaParams, useOAEPPadding);
             Console.WriteLine($"Decrypted message: {decryptedSecret}");
         }
     }
