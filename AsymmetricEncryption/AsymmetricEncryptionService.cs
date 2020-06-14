@@ -22,10 +22,11 @@ namespace AsymmetricEncryption
         /// </summary>
         /// <param name="containerName">The container name.</param>
         /// <param name="useMachineKeyStore">Specify wether or not to use the machine key store.</param>
+        /// <param name="usePrivateKey">Specify whether to use the private key or not.</param>
         /// <param name="keySizeInBits">Key size in bits. Default is 2048.</param>
         public RSAParameters RetrieveKeyPair(string containerName, bool useMachineKeyStore, bool usePrivateKey, int keySizeInBits = 2048)
         {
-            string containerLocation = useMachineKeyStore == true
+            string containerLocation = useMachineKeyStore == true                      // For more information on container location check out this article: Understanding Machine-Level and User-Level RSA Key Containers: https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiOioqv-4HqAhWOXsAKHVT2ACAQFjAAegQIBBAB&url=https%3A%2F%2Fdocs.microsoft.com%2Fen-us%2Fprevious-versions%2Faspnet%2Ff5cs0acs(v%253Dvs.100)&usg=AOvVaw2oYIcE-G4ifzP-GR6HO-Co
                 ? "C:\\ProgramData\\Microsoft\\Crypto\\RSA\\MachineKeys"               // Windows 10 key store
                 : "C:\\Users\\{LOCAL_USER}\\AppData\\Roaming\\Microsoft\\Crypto\\RSA"; // Local user profile key store. The containers are in a GUID subfolder
 
@@ -57,7 +58,7 @@ namespace AsymmetricEncryption
         /// </summary>
         /// <param name="stringDataToEncrypt">String data to encrypt.</param>
         /// <param name="rsaParameters">The parameters for the RSACryptoServiceProvider. The object contains either the public/private key pair or just the public key.</param>
-        /// <param name="useOAEPPadding">OAEPPadding</param>
+        /// <param name="useOAEPPadding">Specify whether to use Optimal asymmetric encryption padding or not.</param>
         /// <param name="keySize">The key size in bits. The default is 2048.</param>
         /// <returns>Encrypted string data in base64 encoding.</returns>
         public string Encrypt(string stringDataToEncrypt, RSAParameters rsaParameters, bool useOAEPPadding, int keySize = 2048)
@@ -77,7 +78,7 @@ namespace AsymmetricEncryption
         /// </summary>
         /// <param name="encryptedData">Encrypted data in base64 encoding.</param>
         /// <param name="rsaParameters">The parameters for the RSACryptoServiceProvider. The object contains either the public/private key pair or just the public key.</param>
-        /// <param name="useOAEPPadding">OAEPPadding</param>
+        /// <param name="useOAEPPadding">Specify whether to use Optimal asymmetric encryption padding or not.</param>
         /// <param name="keySize">The key size in bits. The default is 2048.</param>
         /// <returns>Decrypted string in plain text.</returns>
         public string Decrypt(string encryptedData, RSAParameters rsaParameters, bool useOAEPPadding, int keySize = 2048)

@@ -11,7 +11,7 @@ namespace AsymmetricEncryption
             string containerName = "MyKeyStore";
             bool useMachineKeyStore = false;
             bool useOAEPPadding = false;
-            var usePrivateKey = false;
+            bool usePrivateKey = false;
 
             try
             {
