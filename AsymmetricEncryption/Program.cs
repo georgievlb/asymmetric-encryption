@@ -20,7 +20,7 @@ namespace AsymmetricEncryption
             Console.WriteLine($"Encrypted string: {encryptedSecret}");
 
             // Decrypt with private key
-            //usePrivateKey = true;
+            usePrivateKey = true;
             rsaParams = asymmetricEncryptionService.RetrieveKeyPair(containerName, useMachineKeyStore, usePrivateKey);
             string decryptedSecret = asymmetricEncryptionService.Decrypt(encryptedSecret, rsaParams, useOAEPPadding);
             Console.WriteLine($"Decrypted message: {decryptedSecret}");
