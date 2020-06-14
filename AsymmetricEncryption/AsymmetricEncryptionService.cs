@@ -24,7 +24,7 @@ namespace AsymmetricEncryption
         /// <param name="containerName">The container name.</param>
         /// <param name="useMachineKeyStore">Specify wether or not to use the machine key store.</param>
         /// <param name="keySizeInBits">Key size in bits. Default is 1024.</param>
-        public void GenerateKeyPair(string containerName, bool useMachineKeyStore, int keySizeInBits = 1024)
+        public void RetrieveKeyPair(string containerName, bool useMachineKeyStore, int keySizeInBits = 1024)
         {
             string containerLocation = useMachineKeyStore == true
                 ? "C:\\ProgramData\\Microsoft\\Crypto\\RSA\\MachineKeys"               // Windows 10 key store
@@ -46,5 +46,47 @@ namespace AsymmetricEncryption
             Console.WriteLine($"Key Container Location: {containerLocation}");
         }
 
+        /// <summary>
+        /// Encrypts string data.
+        /// </summary>
+        /// <param name="stringDataToEncrypt">String data to encrypt.</param>
+        /// <param name="encryptWithPrivateKey"></param>
+        /// <param name="useOAEPPadding">OAEPPadding</param>
+        /// <returns>Encrypted string data in base64 encoding.</returns>
+        public string Encrypt(string stringDataToEncrypt, bool encryptWithPrivateKey, bool useOAEPPadding)
+        {
+            if (encryptWithPrivateKey == true)
+            {
+                rsa.ExportParameters(true);
+            }
+            else
+            {
+                rsa.ExportParameters(false);
+            }
+
+            byte[] dataToEncryptBytes = Encoding.UTF8.GetBytes(stringDataToEncrypt);
+            byte[] encryptedBytes = rsa.Encrypt(dataToEncryptBytes, useOAEPPadding);
+            string encryptedDataInBase64 = Convert.ToBase64String(encryptedBytes);
+
+            return encryptedDataInBase64;
+        }
+
+        public string Decrypt(string encryptedData, bool decryptWithPrivateKey, bool useOAEPPadding)
+        {
+            if (decryptWithPrivateKey == true)
+            {
+                rsa.ExportParameters(true);
+            }
+            else
+            {
+                rsa.ExportParameters(false);
+            }
+
+            byte[] encryptedDataBytes = Convert.FromBase64String(encryptedData);
+            byte[] decryptBytes = rsa.Decrypt(encryptedDataBytes, useOAEPPadding);
+            string secretMessage = Encoding.Default.GetString(decryptBytes);
+
+            return secretMessage;
+        }
     }
 }
