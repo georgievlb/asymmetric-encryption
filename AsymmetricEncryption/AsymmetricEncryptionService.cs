@@ -56,8 +56,9 @@ namespace AsymmetricEncryption
         /// Encrypts string data.
         /// </summary>
         /// <param name="stringDataToEncrypt">String data to encrypt.</param>
-        /// <param name="encryptWithPrivateKey"></param>
+        /// <param name="rsaParameters">The parameters for the RSACryptoServiceProvider. The object contains either the public/private key pair or just the public key.</param>
         /// <param name="useOAEPPadding">OAEPPadding</param>
+        /// <param name="keySize">The key size in bits. The default is 2048.</param>
         /// <returns>Encrypted string data in base64 encoding.</returns>
         public string Encrypt(string stringDataToEncrypt, RSAParameters rsaParameters, bool useOAEPPadding, int keySize = 2048)
         {
@@ -71,6 +72,14 @@ namespace AsymmetricEncryption
             return encryptedDataInBase64;
         }
 
+        /// <summary>
+        /// Decrypts string data.
+        /// </summary>
+        /// <param name="encryptedData">Encrypted data in base64 encoding.</param>
+        /// <param name="rsaParameters">The parameters for the RSACryptoServiceProvider. The object contains either the public/private key pair or just the public key.</param>
+        /// <param name="useOAEPPadding">OAEPPadding</param>
+        /// <param name="keySize">The key size in bits. The default is 2048.</param>
+        /// <returns>Decrypted string in plain text.</returns>
         public string Decrypt(string encryptedData, RSAParameters rsaParameters, bool useOAEPPadding, int keySize = 2048)
         {
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(keySize, cspParameters);
