@@ -6,7 +6,11 @@ namespace AsymmetricEncryption
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            AsymmetricEncryptionService asymmetricEncryptionService = new AsymmetricEncryptionService();
+            string containerName = "MyKeyStore";
+            int keySize = 2048;
+            bool useMachineKeyStore = false;
+            asymmetricEncryptionService.GenerateKeyPair(containerName, useMachineKeyStore, keySize);
         }
     }
 }
