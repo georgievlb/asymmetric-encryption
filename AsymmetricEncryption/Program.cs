@@ -9,7 +9,7 @@ namespace AsymmetricEncryption
         {
             AsymmetricEncryptionService asymmetricEncryptionService = new AsymmetricEncryptionService();
             string containerName = "MyKeyStore";
-            bool useMachineKeyStore = false;
+            bool useMachineKeyStore = true;
             bool useOAEPPadding = false;
             bool usePrivateKey = false;
 

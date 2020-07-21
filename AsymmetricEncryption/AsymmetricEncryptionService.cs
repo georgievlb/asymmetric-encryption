@@ -4,7 +4,6 @@ using System.Text;
 
 namespace AsymmetricEncryption
 {
-    // This service is implemented according to https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.rsacryptoserviceprovider?view=netcore-3.1
     public class AsymmetricEncryptionService
     {
         private readonly CspParameters cspParameters;
