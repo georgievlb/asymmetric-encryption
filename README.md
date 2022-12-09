@@ -1,3 +1,5 @@
+*Please note that this project works only in a Windows environment*
+
 # Asymmetric Encryption
 This project demonstrates how to create and use asymmetric key pairs, store them in the Windows key store and use them to encrypt and decrypt data.
 
